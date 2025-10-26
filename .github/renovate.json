@@ -1,0 +1,60 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "schedule": [
+    "every weekend"
+  ],
+  "timezone": "Asia/Jakarta",
+  "labels": ["dependencies"],
+  "assignees": ["@Kiy0w0"],
+  "rangeStrategy": "bump",
+  "semanticCommits": "enabled",
+  "packageRules": [
+    {
+      "groupName": "Next.js",
+      "matchPackagePatterns": ["^next"],
+      "automerge": false,
+      "major": {
+        "enabled": true
+      }
+    },
+    {
+      "groupName": "React",
+      "matchPackagePatterns": ["^react"],
+      "automerge": false
+    },
+    {
+      "groupName": "TypeScript",
+      "matchPackagePatterns": ["^typescript", "^@types/"],
+      "automerge": false
+    },
+    {
+      "groupName": "Tailwind CSS",
+      "matchPackagePatterns": ["^tailwindcss", "^autoprefixer", "^postcss"],
+      "automerge": false
+    },
+    {
+      "groupName": "Dev Dependencies",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "assignees": ["@Kiy0w0"]
+  },
+  "prConcurrentLimit": 5,
+  "prCreation": "immediate",
+  "prHourlyLimit": 2
+}
+
