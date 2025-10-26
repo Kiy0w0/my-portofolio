@@ -89,7 +89,7 @@ export default function Skills() {
             Skills & Expertise
           </h2>
           <p className="text-anime-lavender/80 text-lg max-w-2xl mx-auto">
-            Tech stack I'm comfortable with (still learning more)
+            Tech stack I&apos;m comfortable with (still learning more)
           </p>
         </div>
 
@@ -167,7 +167,7 @@ export default function Skills() {
           <div className="inline-block p-6 bg-gradient-to-r from-anime-pink/10 via-anime-purple/10 to-anime-blue/10 rounded-2xl border border-anime-lavender/20">
             <p className="text-anime-lavender/80 text-lg">
               💡 <span className="font-semibold text-white">Random:</span> Still learning 
-              new stuff every day. That's what makes this fun 😄
+              new stuff every day. That&apos;s what makes this fun 😄
             </p>
           </div>
         </div>

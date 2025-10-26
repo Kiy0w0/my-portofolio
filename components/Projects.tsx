@@ -89,7 +89,7 @@ export default function Projects() {
             Projects
           </h2>
           <p className="text-anime-lavender/80 text-lg max-w-2xl mx-auto">
-            Stuff I've built. Some turned out pretty decent ☕
+            Stuff I&apos;ve built. Some turned out pretty decent ☕
           </p>
         </div>
 

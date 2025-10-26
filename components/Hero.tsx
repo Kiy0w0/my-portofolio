@@ -60,7 +60,7 @@ export default function Hero() {
 
             <h1 className="text-5xl md:text-7xl font-display font-bold">
               <span className="block text-white mb-2">
-                Hello, I'm a{' '}
+                Hello, I&apos;m a{' '}
                 <span className="gradient-text-animated inline-block relative">
                   Developer
                   <span className="absolute inset-0 gradient-text-animated blur-xl opacity-50"></span>
@@ -77,7 +77,7 @@ export default function Hero() {
 
             <p className="text-lg text-anime-lavender/80 max-w-xl leading-relaxed">
               I craft digital experiences that blend functionality with anime and kpop. 
-              You'll find me binge-watching K-dramas or jamming to K-pop ☕
+              You&apos;ll find me binge-watching K-dramas or jamming to K-pop ☕
             </p>
 
             <div className="flex gap-4 pt-4">
