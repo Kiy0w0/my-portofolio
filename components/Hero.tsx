@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Github, Linkedin, Mail, Coffee } from 'lucide-react';
 import DiscordProfile from './DiscordProfile';
 
@@ -10,12 +10,12 @@ export default function Hero() {
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
 
-  const phrases = [
+  const phrases = useMemo(() => [
     'Full Stack Developer',
     'Anime and Kpop',
     'K-Drama Lover',
     'UI/UX Enthusiast',
-  ];
+  ], []);
 
   useEffect(() => {
     const handleTyping = () => {

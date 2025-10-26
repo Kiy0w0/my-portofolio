@@ -67,7 +67,7 @@ export default function Contact() {
       <div className="container mx-auto max-w-6xl z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-display font-bold gradient-text mb-4">
-            Let's Connect
+            Let&apos;s Connect
           </h2>
           <p className="text-anime-lavender/80 text-lg max-w-2xl mx-auto">
             Have an interesting project or just want to chat? Contact me! ☕

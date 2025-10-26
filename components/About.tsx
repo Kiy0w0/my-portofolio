@@ -54,12 +54,12 @@ export default function About() {
                   About Me ✨
                 </h3>
                 <p className="text-anime-lavender/80 leading-relaxed mb-4">
-                  Hey! I'm a developer who really enjoys building stuff on the web. 
-                  Started coding a few years back and honestly can't imagine doing 
+                  Hey! I&apos;m a developer who really enjoys building stuff on the web. 
+                  Started coding a few years back and honestly can&apos;t imagine doing 
                   anything else now.
                 </p>
                 <p className="text-anime-lavender/80 leading-relaxed">
-                  Also when iam coding, i always scroll fesnuk ahh.. (yeah, I'm that person) ☕
+                  Also when iam coding, i always scroll fesnuk ahh.. (yeah, I&apos;m that person) ☕
                 </p>
               </div>
             </div>

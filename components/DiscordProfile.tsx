@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { Music, Gamepad2, Circle } from 'lucide-react';
 
 interface LanyardData {
@@ -230,10 +231,13 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
               {/* Avatar with status */}
               <div className="relative">
                 <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-comfy-dark shadow-xl">
-                  <img
+                  <Image
                     src={getAvatarUrl()}
                     alt={data.discord_user.username}
+                    width={80}
+                    height={80}
                     className="w-full h-full object-cover"
+                    unoptimized
                   />
                 </div>
                 <div
@@ -260,10 +264,13 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
                 {data.listening_to_spotify && data.spotify ? (
                   <div className="flex items-center gap-3">
                     <div className="relative flex-shrink-0">
-                      <img
+                      <Image
                         src={data.spotify.album_art_url}
                         alt={data.spotify.album}
+                        width={64}
+                        height={64}
                         className="w-16 h-16 rounded-lg"
+                        unoptimized
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg"></div>
                     </div>
