@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Heart, Code, Palette, Zap } from 'lucide-react';
+import GitHubHeatmap from './GitHubHeatmap';
+import GitHubRepos from './GitHubRepos';
 
 export default function About() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -99,6 +101,16 @@ export default function About() {
               );
             })}
           </div>
+        </div>
+
+        {/* GitHub Repositories */}
+        <div className="mt-16">
+          <GitHubRepos username="Kiy0w0" />
+        </div>
+
+        {/* GitHub Activity Heatmap */}
+        <div className="mt-16">
+          <GitHubHeatmap username="Kiy0w0" />
         </div>
       </div>
     </section>
