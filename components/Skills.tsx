@@ -103,7 +103,6 @@ export default function Skills() {
                 style={{ animationDelay: `${categoryIndex * 100}ms` }}
               >
                 <div className="h-full p-6 bg-comfy-dark rounded-2xl border border-anime-lavender/10 hover:border-anime-pink/50 transition-all duration-300">
-                  {/* Header */}
                   <div className="flex items-center gap-3 mb-6">
                     <div
                       className={`p-3 bg-${category.color}/10 rounded-xl border border-${category.color}/30`}
@@ -118,7 +117,6 @@ export default function Skills() {
                     </h3>
                   </div>
 
-                  {/* Skills list */}
                   <div className="space-y-4">
                     {category.skills.map((skill, skillIndex) => (
                       <div
@@ -153,7 +151,6 @@ export default function Skills() {
                   </div>
                 </div>
 
-                {/* Hover glow effect */}
                 <div
                   className={`absolute inset-0 bg-gradient-to-br from-${category.color}/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`}
                 />
@@ -162,7 +159,6 @@ export default function Skills() {
           })}
         </div>
 
-        {/* Fun fact section */}
         <div className="mt-12 text-center">
           <div className="inline-block p-6 bg-gradient-to-r from-anime-pink/10 via-anime-purple/10 to-anime-blue/10 rounded-2xl border border-anime-lavender/20">
             <p className="text-anime-lavender/80 text-lg">

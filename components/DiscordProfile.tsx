@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Music, Gamepad2, Circle } from 'lucide-react';
+import { Music, Gamepad2, Circle, Monitor, Smartphone, Globe } from 'lucide-react';
 
 interface LanyardData {
   discord_user: {
@@ -20,6 +20,7 @@ interface LanyardData {
     type: number;
     state?: string;
     details?: string;
+    application_id?: string;
     timestamps?: {
       start?: number;
       end?: number;
@@ -45,6 +46,35 @@ interface LanyardData {
     album: string;
   };
   listening_to_spotify?: boolean;
+  active_on_discord_desktop?: boolean;
+  active_on_discord_mobile?: boolean;
+  active_on_discord_web?: boolean;
+}
+
+interface DiscordBadge {
+  id: string;
+  description: string;
+  icon: string;
+  link?: string;
+}
+
+interface DiscordAPIProfile {
+  user: {
+    id: string;
+    username: string;
+    avatar: string | null;
+    banner: string | null;
+    banner_color: string | null;
+    global_name: string | null;
+    avatar_decoration_data?: {
+      asset: string;
+      sku_id: string;
+    };
+  };
+  badges: DiscordBadge[];
+  display_name_styles?: {
+    colors?: number[];
+  };
 }
 
 interface DiscordProfileProps {
@@ -53,27 +83,36 @@ interface DiscordProfileProps {
 
 export default function DiscordProfile({ userId }: DiscordProfileProps) {
   const [data, setData] = useState<LanyardData | null>(null);
+  const [discordApiData, setDiscordApiData] = useState<DiscordAPIProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [elapsed, setElapsed] = useState<string>('');
 
   useEffect(() => {
-    // First, try REST API to get initial data
+
     const fetchInitialData = async () => {
       try {
         console.log('Fetching from REST API for user:', userId);
-        const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
-        const result = await response.json();
-        
-        console.log('REST API Response:', result);
-        
-        if (result.success && result.data) {
-          setData(result.data);
-          setLoading(false);
+        const [lanyardRes, dstnRes] = await Promise.all([
+          fetch(`https://api.lanyard.rest/v1/users/${userId}`),
+          fetch(`https://dcdn.dstn.to/profile/${userId}`)
+        ]);
+
+        const lanyardResult = await lanyardRes.json();
+
+        if (dstnRes.ok) {
+          const dstnResult = await dstnRes.json();
+          setDiscordApiData(dstnResult);
+        }
+
+        if (lanyardResult.success && lanyardResult.data) {
+          setData(lanyardResult.data);
           setError(null);
         } else {
           setError('User not found. Have you joined the Lanyard Discord server?');
-          setLoading(false);
         }
+
+        setLoading(false);
       } catch (err) {
         console.error('REST API Error:', err);
         setError('Failed to fetch Discord presence');
@@ -83,7 +122,6 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
 
     fetchInitialData();
 
-    // Then setup WebSocket for real-time updates
     let ws: WebSocket;
     let heartbeatInterval: NodeJS.Timeout;
 
@@ -98,7 +136,7 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
         const { op, t, d } = JSON.parse(event.data);
 
         if (op === 1) {
-          // Hello - set up heartbeat
+
           console.log('❤️ Setting up heartbeat:', d.heartbeat_interval);
           heartbeatInterval = setInterval(() => {
             if (ws.readyState === WebSocket.OPEN) {
@@ -106,7 +144,6 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
             }
           }, d.heartbeat_interval);
 
-          // Subscribe to user
           ws.send(
             JSON.stringify({
               op: 2,
@@ -139,7 +176,6 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
       };
     };
 
-    // Connect WebSocket after getting initial data
     setTimeout(connectWebSocket, 1000);
 
     return () => {
@@ -151,6 +187,46 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
       }
     };
   }, [userId]);
+
+  const getActivity = () => {
+    if (!data) return null;
+    if (data.listening_to_spotify && data.spotify) {
+      return {
+        type: 'spotify',
+        ...data.spotify,
+      };
+    }
+
+    if (!data.activities || data.activities.length === 0) {
+      return null;
+    }
+
+    const activity = data.activities.find((a) => [0, 1, 2, 3].includes(a.type));
+    return activity || null;
+  };
+
+  const activity = getActivity();
+
+  useEffect(() => {
+    if (!activity || !activity.timestamps?.start || activity.type === 'spotify') {
+      setElapsed('');
+      return;
+    }
+    const updateElapsed = () => {
+      const diff = Math.floor(Date.now() / 1000) - Math.floor(activity.timestamps!.start! / 1000);
+      if (diff < 0) return;
+      const h = Math.floor(diff / 3600);
+      const m = Math.floor((diff % 3600) / 60);
+      const s = diff % 60;
+      const timeString = h > 0 
+        ? `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}` 
+        : `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      setElapsed(`${timeString} elapsed`);
+    };
+    updateElapsed();
+    const interval = setInterval(updateElapsed, 1000);
+    return () => clearInterval(interval);
+  }, [activity]);
 
   if (loading || !data || !data.discord_user) {
     return (
@@ -185,52 +261,63 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
 
   const getAvatarUrl = () => {
     const { id, avatar } = data.discord_user;
-    return `https://cdn.discordapp.com/avatars/${id}/${avatar}.${
-      avatar?.startsWith('a_') ? 'gif' : 'png'
-    }?size=256`;
+    return `https://cdn.discordapp.com/avatars/${id}/${avatar}.${avatar?.startsWith('a_') ? 'gif' : 'png'
+      }?size=256`;
   };
 
   const getBannerUrl = () => {
-    // Try to get banner from activities or use default gradient
-    return null; // Discord banner requires user banner hash which isn't in Lanyard free tier
+    if (discordApiData?.user?.banner) {
+      return `https://cdn.discordapp.com/banners/${userId}/${discordApiData.user.banner}.${discordApiData.user.banner.startsWith('a_') ? 'gif' : 'png'
+        }?size=512`;
+    }
+    return null;
   };
 
-  const getActivity = () => {
-    if (data.listening_to_spotify && data.spotify) {
-      return {
-        type: 'spotify',
-        ...data.spotify,
-      };
+  const resolveAssetUrl = (appId: string | undefined, assetId: string | undefined) => {
+    if (!assetId) return null;
+    if (assetId.startsWith('mp:external/')) {
+      return `https://media.discordapp.net/external/${assetId.replace('mp:external/', '')}`;
     }
-
-    if (!data.activities || data.activities.length === 0) {
-      return null;
+    if (appId) {
+      return `https://cdn.discordapp.com/app-assets/${appId}/${assetId}.png`;
     }
-
-    const activity = data.activities.find((a) => a.type === 0 || a.type === 1);
-    return activity || null;
+    return null;
   };
 
-  const activity = getActivity();
+
+
+  const nameColor = discordApiData?.display_name_styles?.colors?.[0]
+    ? `#${discordApiData.display_name_styles.colors[0].toString(16).padStart(6, '0')}`
+    : '#ffffff';
 
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="relative group">
-        {/* Glow effect */}
         <div className="absolute -inset-1 bg-gradient-to-r from-anime-pink via-anime-purple to-anime-blue rounded-3xl blur opacity-25 group-hover:opacity-40 transition-opacity duration-300"></div>
 
         <div className="relative bg-comfy-dark rounded-3xl border border-anime-lavender/10 overflow-hidden">
-          {/* Banner */}
-          <div className="h-32 bg-gradient-to-br from-anime-pink/20 via-anime-purple/20 to-anime-blue/20 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+          <div
+            className="h-32 bg-gradient-to-br from-anime-pink/20 via-anime-purple/20 to-anime-blue/20 relative overflow-hidden"
+            style={discordApiData?.user?.banner_color && !getBannerUrl() ? { backgroundColor: discordApiData.user.banner_color } : {}}
+          >
+            {getBannerUrl() ? (
+              <Image
+                src={getBannerUrl()!}
+                alt="Banner"
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            ) : (
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-comfy-dark/80 to-transparent"></div>
           </div>
 
-          {/* Profile Info */}
           <div className="px-6 pb-6">
             <div className="flex items-start gap-4 -mt-10">
-              {/* Avatar with status */}
               <div className="relative">
-                <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-comfy-dark shadow-xl">
+                <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-comfy-dark shadow-xl bg-comfy-dark">
                   <Image
                     src={getAvatarUrl()}
                     alt={data.discord_user.username}
@@ -240,25 +327,61 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
                     unoptimized
                   />
                 </div>
+                {discordApiData?.user?.avatar_decoration_data && (
+                  <Image
+                    src={`https://cdn.discordapp.com/avatar-decoration-presets/${discordApiData.user.avatar_decoration_data.asset}.png`}
+                    alt="Avatar Decoration"
+                    width={96}
+                    height={96}
+                    className="absolute -top-[8px] -left-[8px] w-24 h-24 max-w-none pointer-events-none"
+                    unoptimized
+                  />
+                )}
                 <div
-                  className={`absolute bottom-0 right-0 w-6 h-6 rounded-full border-4 border-comfy-dark ${
-                    statusColors[data.discord_status]
-                  } shadow-lg ${statusGlow[data.discord_status]}`}
+                  className={`absolute bottom-0 right-0 w-6 h-6 rounded-full border-4 border-comfy-dark ${statusColors[data.discord_status]
+                    } shadow-lg ${statusGlow[data.discord_status]} ${discordApiData?.user?.avatar_decoration_data ? 'z-10' : ''}`}
                 ></div>
               </div>
 
-              {/* Username and status */}
               <div className="flex-1 pt-12">
-                <h3 className="text-xl font-display font-bold text-white mb-1">
-                  {data.discord_user.global_name || data.discord_user.username}
-                </h3>
-                <p className="text-sm text-anime-lavender/60">
-                  @{data.discord_user.username}
-                </p>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 
+                    className="text-xl font-display font-bold drop-shadow-sm"
+                    style={{ color: nameColor }}
+                  >
+                    {data.discord_user.global_name || data.discord_user.username}
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-anime-lavender/60">
+                  <p>@{data.discord_user.username}</p>
+                  <div className="flex gap-1 ml-1 opacity-70">
+                    {data.active_on_discord_desktop && <Monitor size={14} />}
+                    {data.active_on_discord_mobile && <Smartphone size={14} />}
+                    {data.active_on_discord_web && <Globe size={14} />}
+                  </div>
+                </div>
               </div>
+
+              {discordApiData?.badges && discordApiData.badges.length > 0 && (
+                <div className="pt-12 flex justify-end">
+                  <div className="flex flex-wrap justify-end gap-1.5 bg-comfy-darker rounded-lg p-1.5 border border-white/5 shadow-sm max-w-[120px]">
+                    {discordApiData.badges.map((badge) => (
+                      <Image
+                        key={badge.id}
+                        src={`https://cdn.discordapp.com/badge-icons/${badge.icon}.png`}
+                        alt={badge.description}
+                        width={24}
+                        height={24}
+                        className="w-[22px] h-[22px] object-contain cursor-help transition-transform hover:scale-110"
+                        title={badge.description}
+                        unoptimized
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Activity Card */}
             {activity && (
               <div className="mt-4 p-4 bg-comfy-darker rounded-2xl border border-anime-lavender/10">
                 {data.listening_to_spotify && data.spotify ? (
@@ -291,14 +414,41 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
                   </div>
                 ) : activity && 'name' in activity ? (
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-anime-blue/10 rounded-lg">
-                      <Gamepad2 className="text-anime-blue" size={20} />
+                    <div className="relative flex-shrink-0">
+                      {resolveAssetUrl(activity.application_id, activity.assets?.large_image || activity.assets?.small_image) ? (
+                        <>
+                          <Image
+                            src={resolveAssetUrl(activity.application_id, activity.assets?.large_image || activity.assets?.small_image)!}
+                            alt={activity.name}
+                            width={64}
+                            height={64}
+                            className="w-16 h-16 rounded-lg object-cover"
+                            unoptimized
+                          />
+                          {activity.assets?.large_image && activity.assets?.small_image && (
+                            <div className="absolute -bottom-1 -right-1 rounded-full bg-comfy-darker border-[3px] border-comfy-darker">
+                              <Image
+                                src={resolveAssetUrl(activity.application_id, activity.assets?.small_image)!}
+                                alt="Small icon"
+                                width={24}
+                                height={24}
+                                className="w-6 h-6 rounded-full object-cover"
+                                unoptimized
+                              />
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="p-4 bg-anime-blue/10 rounded-lg w-16 h-16 flex items-center justify-center">
+                          <Gamepad2 className="text-anime-blue" size={24} />
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <Circle className="text-anime-blue fill-anime-blue" size={8} />
                         <span className="text-xs text-anime-blue font-semibold">
-                          Playing
+                          {activity.type === 2 ? 'Listening to' : activity.type === 3 ? 'Watching' : 'Playing'}
                         </span>
                       </div>
                       <p className="text-sm font-semibold text-white truncate">
@@ -314,13 +464,17 @@ export default function DiscordProfile({ userId }: DiscordProfileProps) {
                           {activity.state}
                         </p>
                       )}
+                      {elapsed && (
+                        <p className="text-xs text-anime-lavender/50 font-mono mt-0.5">
+                          {elapsed}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ) : null}
               </div>
             )}
 
-            {/* Custom Status */}
             {data.activities && data.activities.length > 0 && data.activities.find((a) => a.type === 4) && (
               <div className="mt-3 text-sm text-anime-lavender/80">
                 {data.activities.find((a) => a.type === 4)?.state}

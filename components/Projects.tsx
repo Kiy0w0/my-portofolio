@@ -93,7 +93,6 @@ export default function Projects() {
           </p>
         </div>
 
-        {/* Filter buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           {categories.map((category) => (
             <button
@@ -110,7 +109,6 @@ export default function Projects() {
           ))}
         </div>
 
-        {/* Projects grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project, index) => (
             <div
@@ -119,13 +117,11 @@ export default function Projects() {
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="relative h-full p-6 bg-comfy-dark rounded-2xl border border-anime-lavender/10 hover:border-anime-pink/50 transition-all duration-300 card-hover">
-                {/* Gradient overlay on hover */}
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300`}
                 />
 
                 <div className="relative z-10">
-                  {/* Project emoji/icon */}
                   <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
                     {project.image}
                   </div>
@@ -138,7 +134,6 @@ export default function Projects() {
                     {project.description}
                   </p>
 
-                  {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-4">
                     {project.tags.map((tag, tagIndex) => (
                       <span
@@ -150,7 +145,6 @@ export default function Projects() {
                     ))}
                   </div>
 
-                  {/* Links */}
                   <div className="flex gap-3 pt-4 border-t border-anime-lavender/10">
                     <a
                       href={project.github}
@@ -173,7 +167,6 @@ export default function Projects() {
                   </div>
                 </div>
 
-                {/* Corner sparkle */}
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Sparkles className="text-anime-pink glow-pink" size={20} />
                 </div>

@@ -26,7 +26,6 @@ export default function ParticleBackground() {
 
     const colors = ['#FFB7C5', '#D4A5D4', '#A5D4E7', '#FFDAB9', '#C1FFC1'];
 
-    // Create particles
     for (let i = 0; i < 50; i++) {
       particles.push({
         x: Math.random() * canvas.width,
@@ -57,7 +56,6 @@ export default function ParticleBackground() {
         ctx.fill();
       });
 
-      // Draw connections
       particles.forEach((p1, i) => {
         particles.slice(i + 1).forEach((p2) => {
           const dx = p1.x - p2.x;

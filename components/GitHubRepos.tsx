@@ -33,7 +33,6 @@ export default function GitHubRepos({ username }: GitHubReposProps) {
       try {
         setLoading(true);
         
-        // Fetch repositories from GitHub API
         const response = await fetch(
           `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`
         );
@@ -44,7 +43,6 @@ export default function GitHubRepos({ username }: GitHubReposProps) {
 
         const data = await response.json();
         
-        // Filter out forks and sort by stars
         const filteredRepos = data
           .filter((repo: Repository) => !repo.name.includes('fork'))
           .sort((a: Repository, b: Repository) => b.stargazers_count - a.stargazers_count);
@@ -159,7 +157,6 @@ export default function GitHubRepos({ username }: GitHubReposProps) {
         <div className="absolute -inset-1 bg-gradient-to-r from-anime-pink via-anime-purple to-anime-blue rounded-3xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
         
         <div className="relative bg-comfy-dark p-6 md:p-8 rounded-3xl border border-anime-lavender/10">
-          {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <Github className="text-anime-purple glow-purple" size={28} />
@@ -173,7 +170,6 @@ export default function GitHubRepos({ username }: GitHubReposProps) {
               </div>
             </div>
 
-            {/* Pagination Controls */}
             {totalPages > 1 && (
               <div className="flex items-center gap-4">
                 <button
@@ -203,7 +199,6 @@ export default function GitHubRepos({ username }: GitHubReposProps) {
             )}
           </div>
 
-          {/* Repository Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
             {currentRepos.map((repo) => (
               <div
@@ -213,7 +208,6 @@ export default function GitHubRepos({ username }: GitHubReposProps) {
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-anime-pink via-anime-purple to-anime-blue rounded-xl blur opacity-0 group-hover/card:opacity-30 transition-opacity"></div>
                 
                 <div className="relative h-full p-4 bg-comfy-darker rounded-xl border border-anime-lavender/10 hover:border-anime-pink/50 transition-all flex flex-col">
-                  {/* Repo Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <Code className="text-anime-blue flex-shrink-0" size={18} />
@@ -237,12 +231,10 @@ export default function GitHubRepos({ username }: GitHubReposProps) {
                     </a>
                   </div>
 
-                  {/* Description */}
                   <p className="text-xs text-anime-lavender/70 mb-3 flex-1 line-clamp-2">
                     {repo.description || 'No description available'}
                   </p>
 
-                  {/* Topics */}
                   {repo.topics && repo.topics.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-3">
                       {repo.topics.slice(0, 3).map((topic) => (
@@ -261,7 +253,6 @@ export default function GitHubRepos({ username }: GitHubReposProps) {
                     </div>
                   )}
 
-                  {/* Stats */}
                   <div className="flex items-center justify-between text-xs text-anime-lavender/60 mt-auto pt-3 border-t border-anime-lavender/10">
                     <div className="flex items-center gap-3">
                       {repo.language && (
@@ -281,7 +272,6 @@ export default function GitHubRepos({ username }: GitHubReposProps) {
                     </div>
                   </div>
 
-                  {/* Updated time */}
                   <div className="text-[10px] text-anime-lavender/40 mt-2">
                     Updated {formatDate(repo.updated_at)}
                   </div>
@@ -290,7 +280,6 @@ export default function GitHubRepos({ username }: GitHubReposProps) {
             ))}
           </div>
 
-          {/* Page Indicator Dots */}
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 mt-4">
               {Array.from({ length: totalPages }, (_, i) => (

@@ -16,12 +16,12 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
+
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitStatus('success');
       setFormData({ name: '', email: '', message: '' });
-      
+
       setTimeout(() => {
         setSubmitStatus('idle');
       }, 3000);
@@ -50,14 +50,14 @@ export default function Contact() {
     },
     {
       icon: Twitter,
-      label: 'Twitter',
-      href: 'https://x.com/kiy0w0',
+      label: 'x',
+      href: 'https://x.com/sakuyaiizayoi',
       color: 'anime-pink',
     },
     {
       icon: Mail,
       label: 'Email',
-      href: 'mailto:lostlunadev@gmail.com',
+      href: 'mailto:networkmizu@gmail.com',
       color: 'anime-purple',
     },
   ];
@@ -81,7 +81,7 @@ export default function Contact() {
               <h3 className="text-2xl font-display font-bold text-white mb-6">
                 Contact Info
               </h3>
-              
+
               <div className="space-y-4">
                 <div className="flex items-start gap-4 p-4 bg-comfy-dark rounded-xl border border-anime-lavender/10 hover:border-anime-pink/50 transition-all duration-300">
                   <div className="p-3 bg-anime-pink/10 rounded-lg">
@@ -90,10 +90,10 @@ export default function Contact() {
                   <div>
                     <h4 className="text-white font-semibold mb-1">Email</h4>
                     <a
-                      href="mailto:lostlunadev@gmail.com"
+                      href="mailto:networkmizu@gmail.com"
                       className="text-anime-lavender/70 hover:text-anime-pink transition-colors"
                     >
-                      lostlunadev@gmail.com
+                      networkmizu@gmail.com
                     </a>
                   </div>
                 </div>
@@ -229,14 +229,14 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Footer */}
+        { }
         <div className="mt-20 pt-8 border-t border-anime-lavender/10 text-center">
           <p className="text-anime-lavender/60 flex items-center justify-center gap-2">
             Made with <Heart className="text-anime-pink animate-pulse" size={16} /> by
-            <span className="gradient-text font-semibold">Mamagii</span>
+            <span className="gradient-text font-semibold">Luraph Celesteria</span>
           </p>
           <p className="text-anime-lavender/40 text-sm mt-2">
-            © 2025 All rights reserved. Powered Next.js and Tailwind CSS ☕
+            © 2026 All rights reserved. Powered Next.js and Tailwind CSS ☕
           </p>
         </div>
       </div>

@@ -3,14 +3,14 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
-const poppins = Poppins({ 
+const poppins = Poppins({
   weight: ["400", "600", "700"],
-  subsets: ["latin"], 
-  variable: "--font-display" 
+  subsets: ["latin"],
+  variable: "--font-display"
 });
 
 export const metadata: Metadata = {
-  title: "Mamagii | Comfy Corner",
+  title: "Luraph Celesteria",
   description: "Portfolio website with anime comfy theme for developers",
   icons: {
     icon: '/anya.ico',

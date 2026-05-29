@@ -34,8 +34,6 @@ export default function GitHubHeatmap({ username }: GitHubHeatmapProps) {
       try {
         setLoading(true);
         
-        // Using GitHub API to fetch contribution data
-        // Note: This uses a public API that scrapes GitHub contribution graph
         const response = await fetch(
           `https://github-contributions-api.jogruber.de/v4/${username}?y=last`
         );
@@ -46,7 +44,6 @@ export default function GitHubHeatmap({ username }: GitHubHeatmapProps) {
 
         const result = await response.json();
         
-        // Transform data to our format
         const weeks: ContributionWeek[] = [];
         let currentWeek: ContributionDay[] = [];
         
@@ -62,14 +59,12 @@ export default function GitHubHeatmap({ username }: GitHubHeatmapProps) {
             level: level as 0 | 1 | 2 | 3 | 4,
           });
 
-          // GitHub shows 7 days per week
           if (currentWeek.length === 7) {
             weeks.push({ days: currentWeek });
             currentWeek = [];
           }
         });
 
-        // Add remaining days
         if (currentWeek.length > 0) {
           weeks.push({ days: currentWeek });
         }
@@ -175,7 +170,6 @@ export default function GitHubHeatmap({ username }: GitHubHeatmapProps) {
         <div className="absolute -inset-1 bg-gradient-to-r from-anime-pink via-anime-purple to-anime-blue rounded-3xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
         
         <div className="relative bg-comfy-dark p-6 md:p-8 rounded-3xl border border-anime-lavender/10">
-          {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <Github className="text-anime-purple glow-purple" size={28} />
@@ -207,11 +201,9 @@ export default function GitHubHeatmap({ username }: GitHubHeatmapProps) {
             </div>
           </div>
 
-          {/* Heatmap */}
           <div className="overflow-x-auto pb-4">
             <div className="inline-block min-w-full">
               <div className="flex gap-1">
-                {/* Day labels */}
                 <div className="flex flex-col gap-1 pr-2 text-[10px] text-anime-lavender/50">
                   <div className="h-3"></div>
                   {dayLabels.map((day, i) => (
@@ -225,9 +217,7 @@ export default function GitHubHeatmap({ username }: GitHubHeatmapProps) {
                   ))}
                 </div>
 
-                {/* Contribution grid */}
                 <div className="flex-1">
-                  {/* Month labels */}
                   <div className="flex gap-1 mb-1 text-[10px] text-anime-lavender/50">
                     {data.weeks.map((week, weekIndex) => {
                       const firstDay = new Date(week.days[0].date);
@@ -241,7 +231,6 @@ export default function GitHubHeatmap({ username }: GitHubHeatmapProps) {
                     })}
                   </div>
 
-                  {/* Days grid */}
                   <div className="flex gap-1">
                     {data.weeks.map((week, weekIndex) => (
                       <div key={weekIndex} className="flex flex-col gap-1">
@@ -262,7 +251,6 @@ export default function GitHubHeatmap({ username }: GitHubHeatmapProps) {
             </div>
           </div>
 
-          {/* Legend */}
           <div className="flex items-center gap-2 mt-4 text-xs text-anime-lavender/60">
             <span>Less</span>
             <div className="flex gap-1">
@@ -278,7 +266,6 @@ export default function GitHubHeatmap({ username }: GitHubHeatmapProps) {
         </div>
       </div>
 
-      {/* Tooltip */}
       {hoveredDay && (
         <div
           className="fixed z-[60] pointer-events-none"

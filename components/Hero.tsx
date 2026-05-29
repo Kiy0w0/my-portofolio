@@ -49,7 +49,6 @@ export default function Hero() {
     >
       <div className="container mx-auto max-w-6xl z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Left side - Text content */}
           <div className="space-y-6 animate-fade-in">
             <div className="inline-block">
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-anime-purple/20 border border-anime-purple/30 text-anime-purple text-sm font-medium glow-purple">
@@ -76,8 +75,9 @@ export default function Hero() {
             </div>
 
             <p className="text-lg text-anime-lavender/80 max-w-xl leading-relaxed">
-              I craft digital experiences that blend functionality with anime and kpop. 
-              You&apos;ll find me binge-watching K-dramas or jamming to K-pop ☕
+              I&apos;m a student who loves exploring technology and software development.
+              I&apos;m currently diving into various programming languages and frameworks.
+              While I&apos;m still at the start of my journey, I&apos;m super eager to keep learning, building, and leveling up my skills
             </p>
 
             <div className="flex gap-4 pt-4">
@@ -113,7 +113,7 @@ export default function Hero() {
                 <Linkedin size={24} />
               </a>
               <a
-                href="mailto:lostlunadev@gmail.com"
+                href="mailto:networkmizu@gmail.com"
                 className="p-3 rounded-full bg-comfy-dark border border-anime-lavender/20 hover:border-anime-purple hover:text-anime-purple hover:scale-110 transition-all duration-300 glow"
               >
                 <Mail size={24} />
@@ -121,14 +121,12 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right side - Discord Profile */}
           <div className="relative hidden md:block">
             <DiscordProfile userId="586802340607164417" />
           </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
       <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce-slow">
         <div className="w-6 h-10 rounded-full border-2 border-anime-purple/50 flex items-start justify-center p-2">
           <div className="w-1 h-2 bg-anime-purple rounded-full animate-pulse"></div>

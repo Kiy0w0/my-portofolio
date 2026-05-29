@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Heart, Code, Palette, Zap } from 'lucide-react';
+
 import GitHubHeatmap from './GitHubHeatmap';
 import GitHubRepos from './GitHubRepos';
 
@@ -10,27 +10,27 @@ export default function About() {
 
   const features = [
     {
-      icon: Code,
-      title: 'Discord Bot Developer',
-      description: 'Making bots for fun and profit also open for commission!',
+      iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg',
+      title: 'Languages',
+      description: 'Dart, C++, Go, Rust, JavaScript, TypeScript, PHP, Python, HTML5, CSS3.',
       color: 'anime-pink',
     },
     {
-      icon: Palette,
-      title: 'UI/UX Enthusiast',
-      description: 'I like to make UI/UX look cute, clean and beautiful',
+      iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg',
+      title: 'Frameworks & Libs',
+      description: 'Flutter, React, Next.js, Vue, Laravel, Tailwind, Node.js, Express, Prisma.',
       color: 'anime-purple',
     },
     {
-      icon: Zap,
-      title: 'Fun Fact!',
-      description: 'I Hate Laravel 🙄',
+      iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg',
+      title: 'Tools',
+      description: 'VS Code, Git, GitHub, Docker, Linux, Figma, Postman, Firebase, Supabase, Vercel.',
       color: 'anime-blue',
     },
     {
-      icon: Heart,
-      title: 'Love Playing Games',
-      description: 'Playing CS:2,War Thunder, Apex Legends, and more!',
+      iconUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg',
+      title: 'Databases',
+      description: 'MongoDB, MySQL, PostgreSQL, Redis, SQLite.',
       color: 'anime-peach',
     },
   ];
@@ -56,8 +56,8 @@ export default function About() {
                   About Me ✨
                 </h3>
                 <p className="text-anime-lavender/80 leading-relaxed mb-4">
-                  Hey! I&apos;m a developer who really enjoys building stuff on the web. 
-                  Started coding a few years back and honestly can&apos;t imagine doing 
+                  Hey! I&apos;m a developer who really enjoys building stuff on the web.
+                  Started coding a few years back and honestly can&apos;t imagine doing
                   anything else now.
                 </p>
                 <p className="text-anime-lavender/80 leading-relaxed">
@@ -69,7 +69,6 @@ export default function About() {
 
           <div className="grid grid-cols-2 gap-4">
             {features.map((feature, index) => {
-              const Icon = feature.icon;
               return (
                 <div
                   key={index}
@@ -78,19 +77,18 @@ export default function About() {
                   onMouseLeave={() => setHoveredCard(null)}
                 >
                   <div
-                    className={`h-full p-6 rounded-2xl border backdrop-blur-sm transition-all duration-300 ${
-                      hoveredCard === index
-                        ? `bg-${feature.color}/10 border-${feature.color} scale-105 shadow-xl`
-                        : 'bg-comfy-dark/50 border-anime-lavender/10'
-                    }`}
-                  >
-                    <Icon
-                      className={`mb-4 transition-all duration-300 ${
-                        hoveredCard === index
-                          ? `text-${feature.color} glow scale-110`
-                          : 'text-anime-lavender/60'
+                    className={`h-full p-6 rounded-2xl border backdrop-blur-sm transition-all duration-300 ${hoveredCard === index
+                      ? `bg-${feature.color}/10 border-${feature.color} scale-105 shadow-xl`
+                      : 'bg-comfy-dark/50 border-anime-lavender/10'
                       }`}
-                      size={32}
+                  >
+                    <img
+                      src={feature.iconUrl}
+                      alt={feature.title}
+                      className={`mb-4 w-10 h-10 transition-all duration-300 ${hoveredCard === index
+                        ? 'scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]'
+                        : 'opacity-50 grayscale'
+                        }`}
                     />
                     <h4 className="text-white font-semibold mb-2">{feature.title}</h4>
                     <p className="text-anime-lavender/70 text-sm leading-relaxed">
@@ -103,12 +101,10 @@ export default function About() {
           </div>
         </div>
 
-        {/* GitHub Repositories */}
         <div className="mt-16">
           <GitHubRepos username="Kiy0w0" />
         </div>
 
-        {/* GitHub Activity Heatmap */}
         <div className="mt-16">
           <GitHubHeatmap username="Kiy0w0" />
         </div>
